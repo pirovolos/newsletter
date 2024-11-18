@@ -12,11 +12,15 @@ app.use(bodyParser.json());
 
 // Nodemailer setup
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.riseup.net',
+  port: 465, // Use 465 for SSL
+  secure: true, // True for SSL
   auth: {
-    user: 'pirovolos2022@gmail.com', // Sender email
-    pass: 'your-email-password',    // App-specific password (not your Gmail password)
+    user: 'Pirovolos ', // Sender email
+    pass: 'a030310d2@',    // App-specific password (not your Gmail password)
   },
+  debug: true, // Add this line
+  logger: true, // Add this line
 });
 
 // Endpoint to send email
@@ -29,8 +33,8 @@ app.post('/send-email', async (req, res) => {
 
   try {
     await transporter.sendMail({
-      from: 'pirovolos2022@gmail.com',
-      to: 'pirovolos2022@gmail.com',
+      from: 'pirovolos@riseup.net',
+      to: 'pirovolos@riseup.net',
       subject: 'New Email Submission',
       text: `Received email: ${email}`,
     });
