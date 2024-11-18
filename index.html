@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email Form</title>
+  <title>Email Form with GDPR</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -25,9 +25,34 @@
       margin-top: 15px;
       color: red;
     }
+    #gdprBanner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #f9edbe;
+      color: #333;
+      padding: 10px 20px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    }
+    #gdprBanner button {
+      background-color: #333;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
+  <div id="gdprBanner">
+    We use cookies and collect minimal data to ensure the best user experience in compliance with GDPR. 
+    <button onclick="dismissBanner()">Got it</button>
+  </div>
+
   <h1>Send Your Email</h1>
   <p>Enter an email below (max 100 characters):</p>
   <input id="emailInput" type="text" maxlength="100" placeholder="Enter email">
@@ -36,6 +61,21 @@
   <p id="message"></p>
 
   <script>
+    // GDPR Banner Dismissal
+    function dismissBanner() {
+      const banner = document.getElementById('gdprBanner');
+      banner.style.display = 'none';
+      localStorage.setItem('gdprAccepted', 'true');
+    }
+
+    // Show GDPR Banner if not already dismissed
+    if (!localStorage.getItem('gdprAccepted')) {
+      document.getElementById('gdprBanner').style.display = 'block';
+    } else {
+      document.getElementById('gdprBanner').style.display = 'none';
+    }
+
+    // Send Email Function
     async function sendEmail() {
       const emailInput = document.getElementById('emailInput');
       const message = document.getElementById('message');
@@ -45,7 +85,7 @@
       const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
       if (email.length === 0) {
-        alert("The email field cannot be empty.");
+        alert("Please enter an email address before sending.");
         return;
       }
 
