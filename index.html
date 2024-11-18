@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      text-align: center;
+    }
+    #emailInput {
+      width: 300px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    #message {
+      margin-top: 15px;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Send Your Email</h1>
+  <p>Enter an email below (max 100 characters):</p>
+  <input id="emailInput" type="text" maxlength="100" placeholder="Enter email">
+  <br>
+  <button onclick="sendEmail()">Send Email</button>
+  <p id="message"></p>
+
+  <script>
+    async function sendEmail() {
+      const emailInput = document.getElementById('emailInput');
+      const message = document.getElementById('message');
+      const email = emailInput.value.trim();
+
+      // Basic email validation
+      const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+      if (email.length === 0) {
+        alert("The email field cannot be empty.");
+        return;
+      }
+
+      if (!emailRegex.test(email)) {
+        alert("Invalid email format. Please enter a valid email address.");
+        return;
+      }
+
+      // Send email to the backend
+      try {
+        const response = await fetch('http://localhost:3000/send-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        if (response.ok) {
+          message.textContent = "Email sent successfully!";
+          emailInput.value = '';
+        } else {
+          message.textContent = "Failed to send email.";
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        message.textContent = "Error occurred while sending email.";
+      }
+    }
+  </script>
+</body>
+</html>
