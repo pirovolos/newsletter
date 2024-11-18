@@ -46,6 +46,24 @@
       cursor: pointer;
     }
   </style>
+  <script>
+    // Clear Cache on Page Load
+    function clearCache() {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for (let registration of registrations) {
+            registration.unregister();
+          }
+        });
+      }
+      caches.keys().then(function(names) {
+        for (let name of names) {
+          caches.delete(name);
+        }
+      });
+    }
+    clearCache();
+  </script>
 </head>
 <body>
   <div id="gdprBanner">
@@ -54,8 +72,8 @@
   </div>
 
   <h1>Send Your Email</h1>
-  <p>Enter an email below (max 50 characters):</p>
-  <input id="emailInput" type="text" maxlength="50" placeholder="Enter email">
+  <p>Enter an email below (max 100 characters):</p>
+  <input id="emailInput" type="text" maxlength="100" placeholder="Enter email">
   <br>
   <button onclick="sendEmail()">Send Email</button>
   <p id="message"></p>
@@ -96,7 +114,7 @@
 
       // Send email to the backend
       try {
-        const response = await fetch('http://localhost:3000/send-email', {
+        const response = await fetch(`http://localhost:3000/send-email?cache-bust=${Date.now()}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
